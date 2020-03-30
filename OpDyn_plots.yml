@@ -1,0 +1,23 @@
+# Default plots for the OpDyn model
+---
+age_groups:
+    based_on: age_groups
+
+age_group_avgs:
+    based_on: ages_avg
+
+densities:
+    based_on: densities
+
+user_parameters:
+  based_on: user_parameters
+
+media:
+   based_on: time_series_media
+
+opinion_anim:
+   based_on: opinion_animation
+
+# this plot is deprecated and has been replaced by 'densities' and 'age_groups'
+# opinion:
+#  based_on: time_series_opinion

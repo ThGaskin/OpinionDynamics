@@ -1,0 +1,206 @@
+# The model configuration for the OpDyn model
+#
+# This file should ONLY contain model-specific configuration and needs to be
+# written such that it can be used by _every_ model instance, regardless
+# of the level within a model hierarchy.
+#
+# To that end, it needs to specify the parameters at the level of the instance
+# of a Model class.
+#
+# This file is usually handled by the frontend: usage of advanced yaml features
+# like anchors and tags is supported.
+#
+# Note, however, that this file should hold the _default_ values for a single
+# instance. Therefore, parameter sweeps should not be specified here!
+# Furthermore, if including other models' parameters via the `!model` tag, make
+# sure that no circular includes occur.
+# ---
+## Network structure and Simulation Setup ..........................................
+
+# Below, all parameters for the network structure and properties are set.
+#
+# 'model':          graph creation algorithm (available models: ErdosRenyi (random),
+#                   BarabasiAlbert (scale-free), BollobasRiordan (scale-free directed),
+#                   WattsStrogatz (small-world), regular)
+# 'num_vertices':   total number of vertices
+# 'mean_degree':    mean degree (degree distribution depends on chosen nw-type)
+# 'init_*params*':  these node properties can be initialized
+#                   - by value: [a, a]
+#                   - uniformly distributed over given interval: [a, b)
+# 'attr':           edge property for media network (like 'init_*')
+
+# user network settings
+nw_u:
+
+    model: "ErdosRenyi"
+
+    num_vertices: 3000
+    # The number of vertices
+
+    # The mean degree (equals degree in regular model;
+    #                  not relevant in BollobasRiordan model)
+    mean_degree: 80
+
+    # Model-specific parameters
+    ErdosRenyi:
+        # Allow parallel edges
+        parallel: false
+
+        # Allow self edges
+        self_edges: false
+
+    WattsStrogatz:
+        # Rewiring probability
+        p_rewire: 0.2
+
+    BarabasiAlbert:
+        # Allow parallel edges
+        parallel: false
+
+    BollobasRiordan:
+        # Graph generating parameters
+        alpha: 0.2
+        beta: 0.8
+        gamma: 0.
+        del_in: 0.
+        del_out: 0.5
+
+# media network settings
+nw_m:
+
+    model: "ErdosRenyi"
+
+    # The number of vertices
+    num_vertices: 100
+
+    # The mean degree (equals degree in regular model;
+    #                  not relevant in BollobasRiordan model)
+    mean_degree: 100
+
+    # Model-specific parameters
+    ErdosRenyi:
+        # Allow parallel edges
+        parallel: false
+
+        # Allow self edges
+        self_edges: false
+
+    WattsStrogatz:
+        # Rewiring probability
+        p_rewire: 0.2
+
+        BarabasiAlbert:
+        # Allow parallel edges
+        parallel: false
+
+    BollobasRiordan:
+        # Graph generating parameters
+        alpha: 0.2
+        beta: 0.8
+        gamma: 0.
+        del_in: 0.
+        del_out: 0.5
+
+#Dynamics ----------------------------------------------------------------------
+
+# Distribution options are:
+# constant: parameters are initally constant;
+# uniform: parameters are distributed uniformly across the intervall;
+# gaussian: parameters follow a normal distribution with mean and std deviation to be specified.
+# age-dependent: parameters are distributed by age
+
+opinion:
+    users:
+        distribution_type: uniform
+        const_val: 0.3
+        uniform_int: [0., 1.]
+        mean: 0.5
+        stddev: 0.25
+    media:
+        distribution_type: uniform
+        const_val: 0.5
+        uniform_int: [0., 1.]
+        mean: 0.5
+        stddev: 0.25
+
+tolerance:
+    users:
+        distribution_type: gaussian
+        const_val: 0.3
+        uniform_int: [.1, .9]
+        mean: 0.2
+        stddev: 0.1
+    media:
+        distribution_type: gaussian
+        const_val: 0.3
+        uniform_int: [.1, .9]
+        mean: 0.3
+        stddev: 0.1
+
+susceptibility:
+    users:
+        distribution_type: age-dependent
+        const_val: 0.3
+        uniform_int: [0., 1.]
+        mean: 0.5
+        stddev: 0.2
+        custom:
+          peak: 17
+          val_at_0: 0.5
+          val_at_peak: 0.8
+    media:
+        distribution_type: gaussian
+        const_val: 0.3
+        uniform_int: [0., 1.]
+        mean: 0.15
+        stddev: 0.04
+
+persuasiveness:
+    users:
+    media:
+        distribution_type: gaussian
+        const_val: 0.01
+        uniform_int: [0., 1.]
+        mean: 0.15
+        stddev: 0.04
+
+
+# How strongly is tolerance augmented or reduced upon moving towards or away from the centre respectively.
+radicalisation_parameter: 2 #must be in [0, 4]. Turn radicalisation off by setting to 0
+
+#User ageing: let users grow old and eventually respawn.
+user_ageing: on
+
+#media status
+media_status: off  # turn media functionality on or off
+
+#life_cycles: how many numerical steps = one year?
+#one node is updated once per num_vertices numerical steps
+life_cycle: 5000
+
+# How many nodes are reinitiliased each year? Typical values: 2-3%
+replacement_rate: 0.03
+
+#define which age groups are to be classed as parents (can reproduce), seniors (can die), and children (are rewired to new children)
+age_groups:
+    children: [1, 10]
+    parents: [20, 40]
+    seniors: [75, 1000]
+
+#set the frequency of media network updates compared to user network updates. A
+#media time constant of 2 means the media network updates its opinion on every
+#second iteration. Must be 1 or larger.
+media_time_constant: 1
+
+attr: [-1., 1.]
+init_ads: [10., 10.]
+
+
+## Interaction parameters ..........................................................
+
+# scaling of the weight change per revision.
+# This determines the strength of selective exposure
+weighting: 0.1
+
+# rewiring probability
+rewiring: 0.4

@@ -1,0 +1,12 @@
+#Test config file
+susceptibility:
+    users:
+        distribution_type: age-dependent
+        const_val: 0.3
+        uniform_int: [0., 1.]
+        mean: 0.5
+        stddev: 0.2
+        custom:
+          peak: 17
+          val_at_0: 0.5
+          val_at_peak: 0.8

@@ -1,0 +1,136 @@
+# Base configuration for the OpDyn plots
+---
+time_series_opinion:
+  creator: universe
+  universes: all
+  module: model_plots.OpDyn
+  plot_func: user_opinion_evolution
+
+user_parameters:
+    creator: universe
+    universes: all
+    module: model_plots.OpDyn
+    plot_func: user_parameters_evolution
+    file_ext: png
+
+time_series_media:
+  creator: universe
+  universes: all
+  module: model_plots.OpDyn
+  plot_func: media
+
+opinion_animation:
+    creator: universe
+    universes: all
+
+    module: model_plots.OpDyn
+    plot_func: opinion_animation
+
+    time_idx:
+    to_plot: opinion_u
+
+    helpers:
+     set_title:
+      title: Opinion distribution
+
+     set_labels:
+      x: User opinion
+      y: Group size
+
+    num_bins: # number of bins to be used for histogram
+    val_range: # range to be used to compute bins, [min, max]
+
+    animation:
+      enabled: true
+      writer_kwargs:
+        frames:
+          saving:
+            dpi: 300
+
+        ffmpeg:
+          init:
+            fps: 8
+          saving:
+            dpi: 300
+
+      animation_update_kwargs:
+        stepsize: 10
+      writer: ffmpeg
+    file_ext: mp4
+
+age_groups:
+    creator: universe
+    universes: all
+
+    module: model_plots.OpDyn
+    plot_func: age_groups
+
+    time_idx:
+    to_plot: opinion_u
+
+    helpers:
+     set_title:
+      title: Opinion distribution by age group
+
+     set_labels:
+      x: User opinion
+      y: Group size
+
+    num_bins: 50 #number of bins to be used for histogram
+    val_range: [0, 1]
+    ages: [0, 10, 20, 40, 60, 1000]
+    animation:
+      enabled: true
+      writer_kwargs:
+        frames:
+          saving:
+            dpi: 300
+
+        ffmpeg:
+          init:
+            fps: 8
+          saving:
+            dpi: 300
+      animation_update_kwargs:
+        stepsize: 100
+      writer: ffmpeg
+    file_ext: mp4
+
+ages_avg:
+    creator: universe
+    universes: all
+
+    module: model_plots.OpDyn
+    plot_func: ages_avg
+
+    to_plot: opinion_u
+    helpers:
+     set_title:
+      title: Average opinion by age group
+
+     set_labels:
+      x: User opinion
+      y: Time [years]
+
+    val_range: # range to be used to compute bins, [min, max]
+    ages: [0, 10, 20, 40, 60, 1000]
+
+densities:
+    creator: universe
+    universes: all
+
+    module: model_plots.OpDyn
+    plot_func: densities
+
+    to_plot: opinion_u
+    num_bins: 200
+    helpers:
+     set_title:
+      title: Opinion clusters over time
+
+     set_labels:
+      x: User opinion
+      y: Time [years]
+
+    val_range: # range to be used to compute bins, [min, max]
+    file_ext: pdf
